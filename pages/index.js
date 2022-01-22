@@ -26,12 +26,12 @@ export default function Home() {
         <Image src='/static/hero-image.png' width={700} height={400} />
       </div>
       <div className={styles.cardLayout}>
-        {coffeeStores.map((CoffeeStore, i) => {
+        {coffeeStores.map((coffeeStore, i) => {
           return (
             <Card key={i}
-              name={CoffeeStore.name}
-              imgUrl='/static/hero-image.png'
-              href='/coffee-store/darkhorse-coffee'
+              name={coffeeStore.name}
+              imgUrl={coffeeStore.imgUrl}
+              href={`/coffee-store/${coffeeStore.id}`}
               className={styles.card}
             />
           );
