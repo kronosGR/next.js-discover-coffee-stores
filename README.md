@@ -1,7 +1,8 @@
 #Next.js - Discover Coffee Stores
 
 * Mesh gradient (https://meshgradient.com/)
-*
+* combine classes (classnames)
+* glass effect background (https://hype4.academy/tools/glassmorphism-generator)
 
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
