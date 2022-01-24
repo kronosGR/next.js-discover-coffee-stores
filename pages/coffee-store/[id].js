@@ -2,11 +2,10 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import cls from 'classnames'
-
-import coffeeStoreData from '../../data/coffee-store.json';
+import cls from 'classnames';
 
 import styles from '../../styles/coffee-store.module.css';
+import { fetchCoffeeStores } from '../../lib/coffee-stores';
 
 //   Client Id
 // B4M1I4L1QNP1WN2EBJXQFG5LT5Y50XHGINB4TTJLS3CW4FVH
@@ -14,22 +13,25 @@ import styles from '../../styles/coffee-store.module.css';
 // Client Secret
 // I20N5L3TDB3ZPPZ23KDDWKBHCBLBFF5GR4CFWRPKNXYTSPB1
 
-export function getStaticProps(staticProps) {
+export async function getStaticProps(staticProps) {
   const params = staticProps.params;
+  const coffeeStores = await fetchCoffeeStores();
+
   return {
     props: {
-      coffeeStore: coffeeStoreData.find((coffeeStore) => {
-        return coffeeStore.id.toString() === params.id;
+      coffeeStore: coffeeStores.find((coffeeStore) => {
+        return coffeeStore.fsq_id === params.id;
       }),
     },
   };
 }
 
-export function getStaticPaths() {
-  const paths = coffeeStoreData.map((coffeeStore) => {
+export async function getStaticPaths() {
+  const coffeeStores = await fetchCoffeeStores();
+  const paths = coffeeStores.map((coffeeStore) => {
     return {
       params: {
-        id: coffeeStore.id.toString(),
+        id: coffeeStore.fsq_id,
       },
     };
   });
@@ -48,9 +50,9 @@ const CoffeeStore = (props) => {
 
   const { address, name, neighbourhood, imgUrl } = props.coffeeStore;
 
-  const handleUpvoteButton = () =>{
-    consle.log('upvote')
-  }
+  const handleUpvoteButton = () => {
+    consle.log('upvote');
+  };
 
   return (
     <div className={styles.layout}>
@@ -68,7 +70,10 @@ const CoffeeStore = (props) => {
             <h1 className={styles.name}>{name}</h1>
           </div>
           <Image
-            src={imgUrl}
+            src={
+              imgUrl ||
+              'https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80'
+            }
             width={600}
             height={360}
             className={styles.storeImg}
