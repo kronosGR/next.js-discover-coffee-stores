@@ -8,6 +8,12 @@ import coffeeStoreData from '../../data/coffee-store.json';
 
 import styles from '../../styles/coffee-store.module.css';
 
+//   Client Id
+// B4M1I4L1QNP1WN2EBJXQFG5LT5Y50XHGINB4TTJLS3CW4FVH
+
+// Client Secret
+// I20N5L3TDB3ZPPZ23KDDWKBHCBLBFF5GR4CFWRPKNXYTSPB1
+
 export function getStaticProps(staticProps) {
   const params = staticProps.params;
   return {
