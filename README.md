@@ -3,7 +3,8 @@
 * Mesh gradient (https://meshgradient.com/)
 * combine classes (classnames)
 * glass effect background (https://hype4.academy/tools/glassmorphism-generator)
-* foursquare api(https://developer.foursquare.com/)
+* foursquare API(https://developer.foursquare.com/)
+* unsplash API, unsplash-js(https://unsplash.com/oauth/applications)
 * Router
 * Static rendering
 
