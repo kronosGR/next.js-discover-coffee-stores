@@ -8,6 +8,7 @@ import styles from '../styles/Home.module.css';
 import { fetchCoffeeStores } from '../lib/coffee-stores';
 import useTrackLocation from '../hooks/use-track-location';
 import { useEffect } from 'react';
+import { useState } from 'react';
 
 export async function getStaticProps(context) {
   const coffeeStores = await fetchCoffeeStores();
@@ -23,15 +24,20 @@ export default function Home(props) {
   const { handleTrackLocation, latLong, locationErrorMsg, isFindingLocation } =
     useTrackLocation();
 
+  const [coffeeStores, setCofferStores] = useState('');
+  const [coffeeStoresError, setCofferStoresError] = useState(null);
+
   console.log({ latLong, locationErrorMsg });
 
   useEffect(async () => {
     if (latLong) {
       try {
         const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
-        console.log(fetchedCoffeeStores)
+        setCofferStores(fetchedCoffeeStores);
+        console.log(fetchedCoffeeStores);
       } catch (error) {
-        console.log({error})
+        console.log({ error });
+        setCofferStoresError(error.message);
       }
     }
   }, [latLong]);
@@ -54,16 +60,17 @@ export default function Home(props) {
           handleOnClick={handleOnBannerBtnClick}
         />
         {locationErrorMsg && <p>Something went wrong: {locationErrorMsg}</p>}
+        {coffeeStoresError && <p>Something went wrong: {coffeeStoresError}</p>}
         <div className={styles.heroImage}>
           <Image src='/static/hero-image.png' width={700} height={400} />
         </div>
 
-        {props.coffeeStores.length > 0 && (
+        {coffeeStores.length > 0 && (
           <div className={styles.sectionWrapper}>
-            <h2 className={styles.heading2}>Toronto Stores </h2>
+            <h2 className={styles.heading2}>Stores near me </h2>
 
             <div className={styles.cardLayout}>
-              {props.coffeeStores.map((coffeeStore) => {
+              {coffeeStores.map((coffeeStore) => {
                 return (
                   <Card
                     key={coffeeStore.fsq_id}
