@@ -7,6 +7,7 @@ import styles from '../styles/Home.module.css';
 // import coffeeStoreData from '../data/coffee-store.json';
 import { fetchCoffeeStores } from '../lib/coffee-stores';
 import useTrackLocation from '../hooks/use-track-location';
+import { useEffect } from 'react';
 
 export async function getStaticProps(context) {
   const coffeeStores = await fetchCoffeeStores();
@@ -23,6 +24,17 @@ export default function Home(props) {
     useTrackLocation();
 
   console.log({ latLong, locationErrorMsg });
+
+  useEffect(async () => {
+    if (latLong) {
+      try {
+        const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
+        console.log(fetchedCoffeeStores)
+      } catch (error) {
+        console.log({error})
+      }
+    }
+  }, [latLong]);
 
   const handleOnBannerBtnClick = () => {
     handleTrackLocation();
