@@ -7,6 +7,7 @@
 * unsplash API, unsplash-js(https://unsplash.com/oauth/applications)
 * Router
 * Static rendering
+* Geolocation API
 
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
