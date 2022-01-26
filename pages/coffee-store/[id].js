@@ -6,6 +6,9 @@ import cls from 'classnames';
 
 import styles from '../../styles/coffee-store.module.css';
 import { fetchCoffeeStores } from '../../lib/coffee-stores';
+import { useContext, useState, useEffect } from 'react';
+import { StoreContext } from '../_app';
+import { isEmpty } from '../../utils';
 
 //   Client Id
 // B4M1I4L1QNP1WN2EBJXQFG5LT5Y50XHGINB4TTJLS3CW4FVH
@@ -41,14 +44,33 @@ export async function getStaticPaths() {
   };
 }
 
-const CoffeeStore = (props) => {
+const CoffeeStore = (initialProps) => {
   const router = useRouter();
 
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
 
-  const { address, neighborhood, name, imgUrl } = props.coffeeStore;
+  const id = router.query.id;
+
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore)
+
+  const {
+    state: { coffeeStores },
+  } = useContext(StoreContext);
+
+  useEffect(()=>{
+    if (isEmpty(initialProps.coffeeStore)){
+      if(coffeeStores.length>0){
+        const findCoffeeStoreById = coffeeStores.find((coffeeStore) => {
+          return coffeeStore.fsq_id === id;
+        });
+        setCoffeeStore(findCoffeeStoreById)
+      }
+    }
+  },[id])
+
+  const { address, neighborhood, name, imgUrl } = coffeeStore;
 
   const handleUpvoteButton = () => {
     consle.log('upvote');

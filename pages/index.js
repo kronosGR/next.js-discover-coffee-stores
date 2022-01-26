@@ -22,8 +22,7 @@ export async function getStaticProps(context) {
 }
 
 export default function Home(props) {
-  const { handleTrackLocation,  locationErrorMsg, isFindingLocation } =
-    useTrackLocation();
+  const { handleTrackLocation, locationErrorMsg, isFindingLocation } = useTrackLocation();
 
   // const [coffeeStores, setCofferStores] = useState('');
   const [coffeeStoresError, setCofferStoresError] = useState(null);
@@ -31,11 +30,10 @@ export default function Home(props) {
   const { dispatch, state } = useContext(StoreContext);
   const { coffeeStores, latLong } = state;
 
-
   useEffect(async () => {
     if (latLong) {
       try {
-        const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30) ;
+        const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
         //(fetchedCoffeeStores);
         dispatch({
           type: ACTION_TYPES.SET_COFFEE_STORES,
@@ -73,7 +71,7 @@ export default function Home(props) {
           <Image src='/static/hero-image.png' width={700} height={400} />
         </div>
 
-        {coffeeStores && (
+        {coffeeStores.length > 0 && (
           <div className={styles.sectionWrapper}>
             <h2 className={styles.heading2}>Stores near me </h2>
 
