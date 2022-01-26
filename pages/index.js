@@ -7,8 +7,9 @@ import styles from '../styles/Home.module.css';
 // import coffeeStoreData from '../data/coffee-store.json';
 import { fetchCoffeeStores } from '../lib/coffee-stores';
 import useTrackLocation from '../hooks/use-track-location';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useState } from 'react';
+import { ACTION_TYPES, StoreContext } from './_app';
 
 export async function getStaticProps(context) {
   const coffeeStores = await fetchCoffeeStores();
@@ -21,22 +22,29 @@ export async function getStaticProps(context) {
 }
 
 export default function Home(props) {
-  const { handleTrackLocation, latLong, locationErrorMsg, isFindingLocation } =
+  const { handleTrackLocation,  locationErrorMsg, isFindingLocation } =
     useTrackLocation();
 
-  const [coffeeStores, setCofferStores] = useState('');
+  // const [coffeeStores, setCofferStores] = useState('');
   const [coffeeStoresError, setCofferStoresError] = useState(null);
 
-  console.log({ latLong, locationErrorMsg });
+  const { dispatch, state } = useContext(StoreContext);
+  const { coffeeStores, latLong } = state;
+
 
   useEffect(async () => {
     if (latLong) {
       try {
-        const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
-        setCofferStores(fetchedCoffeeStores);
-        console.log(fetchedCoffeeStores);
+        const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30) ;
+        //(fetchedCoffeeStores);
+        dispatch({
+          type: ACTION_TYPES.SET_COFFEE_STORES,
+          payload: {
+            coffeeStores: fetchedCoffeeStores,
+          },
+        });
+        setCofferStoresError('');
       } catch (error) {
-        console.log({ error });
         setCofferStoresError(error.message);
       }
     }
@@ -65,7 +73,7 @@ export default function Home(props) {
           <Image src='/static/hero-image.png' width={700} height={400} />
         </div>
 
-        {coffeeStores.length > 0 && (
+        {coffeeStores && (
           <div className={styles.sectionWrapper}>
             <h2 className={styles.heading2}>Stores near me </h2>
 
