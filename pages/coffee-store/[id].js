@@ -51,24 +51,52 @@ const CoffeeStore = (initialProps) => {
     return <div>Loading...</div>;
   }
 
-  const id = router.query.id;
+  const fsq_id = router.query.id;
 
-  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore)
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
 
   const {
     state: { coffeeStores },
   } = useContext(StoreContext);
 
-  useEffect(()=>{
-    if (isEmpty(initialProps.coffeeStore)){
-      if(coffeeStores.length>0){
-        const findCoffeeStoreById = coffeeStores.find((coffeeStore) => {
-          return coffeeStore.fsq_id === id;
+  const handleCreateCoffeeStore = async (coffeeStore) => {
+    try {
+      const { fsq_id, name, voting, imgUrl, neighbourhood, address } = coffeeStore;
+      const response = await fetch("/api/createCoffeeStore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: fsq_id,
+          name,
+          voting: 0,
+          imgUrl,
+          neighbourhood: neighbourhood || "",
+          address: address || "",
+        }),
+      });
+
+      const dbCoffeeStore = await response.json();
+    } catch (err) {
+      console.error("Error creating coffee store", err);
+    }
+  };
+
+  useEffect(() => {
+    if (isEmpty(initialProps.coffeeStore)) {
+      if (coffeeStores.length > 0) {
+        const coffeeStoreFromContext = coffeeStores.find((coffeeStore) => {
+          console.log(coffeeStore)
+          return coffeeStore.fsq_id === fsq_id;
         });
-        setCoffeeStore(findCoffeeStoreById)
+        if (coffeeStoreFromContext) {
+          setCoffeeStore(coffeeStoreFromContext);
+          handleCreateCoffeeStore(coffeeStoreFromContext);
+        }
       }
     }
-  },[id])
+  }, [fsq_id]);
 
   const { address, neighborhood, name, imgUrl } = coffeeStore;
 
