@@ -62,24 +62,24 @@ const CoffeeStore = (initialProps) => {
   const handleCreateCoffeeStore = async (coffeeStore) => {
     try {
       const { fsq_id, name, voting, imgUrl, neighbourhood, address } = coffeeStore;
-      const response = await fetch("/api/createCoffeeStore", {
-        method: "POST",
+      const response = await fetch('/api/createCoffeeStore', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           id: fsq_id,
           name,
           voting: 0,
           imgUrl,
-          neighbourhood: neighbourhood || "",
-          address: address || "",
+          neighbourhood: neighbourhood || '',
+          address: address || '',
         }),
       });
 
       const dbCoffeeStore = await response.json();
     } catch (err) {
-      console.error("Error creating coffee store", err);
+      console.error('Error creating coffee store', err);
     }
   };
 
@@ -87,7 +87,7 @@ const CoffeeStore = (initialProps) => {
     if (isEmpty(initialProps.coffeeStore)) {
       if (coffeeStores.length > 0) {
         const coffeeStoreFromContext = coffeeStores.find((coffeeStore) => {
-          console.log(coffeeStore)
+          console.log(coffeeStore);
           return coffeeStore.fsq_id === fsq_id;
         });
         if (coffeeStoreFromContext) {
@@ -95,8 +95,10 @@ const CoffeeStore = (initialProps) => {
           handleCreateCoffeeStore(coffeeStoreFromContext);
         }
       }
+    } else {
+      handleCreateCoffeeStore(initialProps.coffeeStore);
     }
-  }, [fsq_id]);
+  }, [fsq_id, initialProps, initialProps.coffeeStore]);
 
   const { address, neighborhood, name, imgUrl } = coffeeStore;
 
