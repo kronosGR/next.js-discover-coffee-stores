@@ -3,17 +3,27 @@ const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
   process.env.AIRTABLE_BASE_KEY
 );
 
-const table = base ("coffee-stores")
+const table = base('coffee-stores');
 
-console.log(table)
+console.log(table);
 
-const createCoffeeStore = (req, res)=> {
+const createCoffeeStore = async (req, res) => {
+  if (req.method === 'POST') {
+    const findCoffeeStoreRecords = await table
+      .select({
+        filterByFormula: `id="0"`,
+      })
+      .firstPage();
 
-  if(req.method === 'POST'){
-    res.json({message:'ssss'})
-  } else {    
-    res.json({message:'Not GET'})
+    if (findCoffeeStoreRecords.length!==0) {
+      res.json(findCoffeeStoreRecords);
+    }
+    else {
+
+    }
+  } else {
+    res.json({ message: 'Not GET' });
   }
-}
+};
 
-export default createCoffeeStore
+export default createCoffeeStore;
