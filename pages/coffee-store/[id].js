@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import cls from 'classnames';
 
+import useSWR from 'swr';
+
 import styles from '../../styles/coffee-store.module.css';
 import { fetchCoffeeStores } from '../../lib/coffee-stores';
 import { useContext, useState, useEffect } from 'react';
@@ -50,10 +52,11 @@ const CoffeeStore = (initialProps) => {
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-
+  
   const fsq_id = router.query.id;
-
+  
   const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
+  const [votingCount, setVotingCount] = useState(1);
 
   const {
     state: { coffeeStores },
@@ -61,7 +64,7 @@ const CoffeeStore = (initialProps) => {
 
   const handleCreateCoffeeStore = async (coffeeStore) => {
     try {
-      const { fsq_id, name, voting, imgUrl, neighbourhood, address } = coffeeStore;
+      const { fsq_id, name, imgUrl, neighbourhood, address } = coffeeStore;
       const response = await fetch('/api/createCoffeeStore', {
         method: 'POST',
         headers: {
@@ -106,6 +109,18 @@ const CoffeeStore = (initialProps) => {
     consle.log('upvote');
   };
 
+  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${fsq_id}`);
+  useEffect(() => {
+    if (data && data.length>0) {
+      setCoffeeStore(data[0])
+      setVotingCount(data[0].voting)
+    }
+  },[data]);
+
+  if (error){
+    return <div>Something went wrong.</div>
+  }
+
   return (
     <div className={styles.layout}>
       <Head>
@@ -144,7 +159,7 @@ const CoffeeStore = (initialProps) => {
           )}
           <div className={styles.iconWrapper}>
             <Image src='/static/icons/star.svg' width={24} height={24} />
-            <p className={styles.text}>1</p>
+            <p className={styles.text}>{votingCount}</p>
           </div>
           <button className={styles.upvoteButton} onClick={handleUpvoteButton}>
             Up Vote
