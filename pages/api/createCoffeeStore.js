@@ -1,15 +1,23 @@
-import { findRecordByFilter, getMinifiedRecords, table } from '../../lib/airtable';
+import {
+  table,
+  getMinifiedRecords,
+  findRecordByFilter,
+} from "../../lib/airtable";
 
 const createCoffeeStore = async (req, res) => {
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
+    //find a record
+
     const { id, name, neighbourhood, address, imgUrl, voting } = req.body;
+
     try {
       if (id) {
-        const records = findRecordByFilter(id);
+        const records = await findRecordByFilter(id);
 
         if (records.length !== 0) {
           res.json(records);
         } else {
+          //create a record
           if (name) {
             const createRecords = await table.create([
               {
@@ -25,21 +33,21 @@ const createCoffeeStore = async (req, res) => {
             ]);
 
             const records = getMinifiedRecords(createRecords);
-
-            res.json({ message: 'create a record', records: records });
+            res.json(records);
           } else {
-            res.status(400).json({ message: 'name is missing' });
+            res.status(400);
+            res.json({ message: "Id or name is missing" });
           }
         }
       } else {
-        res.status(400).json({ message: 'Id is missing' });
+        res.status(400);
+        res.json({ message: "Id is missing" });
       }
-    } catch (error) {
-      console.log({ message: 'Error creating or finding store', error });
-      res.staut(500).json({ message: 'Error creating or finding store', error });
+    } catch (err) {
+      console.error("Error creating or finding a store", err);
+      res.status(500);
+      res.json({ message: "Error creating or finding a store", err });
     }
-  } else {
-    res.json({ message: 'Not GET' });
   }
 };
 

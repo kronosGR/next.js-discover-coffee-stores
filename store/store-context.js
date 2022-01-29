@@ -1,13 +1,13 @@
-import { createContext, useReducer } from 'react';
+import { createContext, useReducer } from "react";
 
 export const StoreContext = createContext();
 
 export const ACTION_TYPES = {
-  SET_LAT_LONG: 'SET_LAT_LONG',
-  SET_COFFEE_STORES: 'SET_COFFEE_STORES',
+  SET_LAT_LONG: "SET_LAT_LONG",
+  SET_COFFEE_STORES: "SET_COFFEE_STORES",
 };
 
-export const storeReducer = (state, action) => {
+const storeReducer = (state, action) => {
   switch (action.type) {
     case ACTION_TYPES.SET_LAT_LONG: {
       return { ...state, latLong: action.payload.latLong };
@@ -22,15 +22,16 @@ export const storeReducer = (state, action) => {
 
 const StoreProvider = ({ children }) => {
   const initialState = {
-    latLong: '',
+    latLong: "",
     coffeeStores: [],
   };
 
   const [state, dispatch] = useReducer(storeReducer, initialState);
-
   return (
-    <StoreContext.Provider value={{ state, dispatch }}>{children}</StoreContext.Provider>
+    <StoreContext.Provider value={{ state, dispatch }}>
+      {children}
+    </StoreContext.Provider>
   );
 };
 
-export default StoreProvider
+export default StoreProvider;
